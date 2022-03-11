@@ -16,3 +16,7 @@ jobs:
       - name: Lint check
         run: |
           npm run lint
+
+      - name: Jest test
+        run: |
+          npm run test
