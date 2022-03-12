@@ -23,6 +23,7 @@
   "homepage": "https://github.com/parkers12/otus-homework-12#readme",
   "devDependencies": {
     "@babel/core": "^7.17.5",
+    "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
     "@types/react": "^17.0.39",
@@ -48,8 +49,8 @@
     }
   },
   "lint-staged": {
-    "*.js": "eslint --fix",
-    "*.{js,css,md,json,yml}": "prettier --write"
+    "*.{js,ts}": "eslint --fix",
+    "*.{js,ts,css,scss,md,json,yml,html}": "prettier --write"
   },
   "dependencies": {
     "firebase": "^9.6.8"

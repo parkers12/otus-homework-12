@@ -10,4 +10,5 @@ module.exports = (api) => ({
       ],
       "@babel/preset-typescript",
     ],
+    plugins: ["@babel/plugin-transform-runtime"],
   });
