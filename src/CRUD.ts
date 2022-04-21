@@ -1,25 +1,11 @@
-import storage from "./storage";
+import ICRUD from "./types/ICRUD";
 
-class CRUD {
-    constructor(method) {
-        this.storage = method;
-    }
+import Storage from "./LS/storage";
+import Firebase from "./FB/firebase";
 
-    async create(tasks: ITasks) {
-        await this.storage.create(tasks);
+const getStorage = (storageType: 'LS'|'FB'):ICRUD => {
+    if (storageType==='LS'){
+        return new Storage();
     }
-
-    async read() {
-        await this.storage.read();
-    }
-
-    async update(tasks: ITasks, newItem: ITasks, id: number) {
-        await this.storage.update(tasks, newItem, id);
-    }
-
-    async delete(tasks: ITasks, id: number) {
-        await this.storage.delete(tasks, id);
-    }
+    return new Firebase();
 }
-
-export default CRUD;
