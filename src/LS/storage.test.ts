@@ -4,13 +4,7 @@ const storage = new Storage();
 
 describe("Test storage", () => {
     beforeEach(() => {
-        // to fully reset the state between tests, clear the storage
         localStorage.clear();
-        // and reset all mocks
-        jest.clearAllMocks();
-        
-        // clearAllMocks will impact your other mocks too, so you can optionally reset individual mocks instead:
-        localStorage.setItem.mockClear();
     });
 
     test("Method create", async () => {
