@@ -2,55 +2,45 @@ import ITask from "../types/ITask";
 import ICRUD from "../types/ICRUD";
 
 class Storage implements ICRUD {
+    storage = "Tasks";
 
-    static write = (tasks: ITask): void =>
-        localStorage.setItem("tasks", JSON.stringify(tasks));
+    write = (tasks: ITask): void =>
+        localStorage.setItem(this.storage, JSON.stringify(tasks));
 
-    static getList = (): ITask[] | null =>
-        JSON.parse(localStorage.getItem("tasks") as string);
+    getList = (): ITask[] => {
+        let data: ITask[] = [];
+        data = JSON.parse(localStorage.getItem(this.storage) as string);
+        return data;
+    }
 
-    static create = (newItem: ITask): number => {
-        let newDataLength = 0;
-        const data = Storage.getList;
-        if (data !== null && Array.isArray(data)) {
-            newDataLength = data.push(newItem);
+    create = (newItem: ITask): void => {
+        const data = this.getList;
+        if (data.length > 0) {
+            data.push(newItem);
         } else {
-            Storage.write(newItem);
-            const newData = Storage.getList;
-            newDataLength = newData.length;
+            this.write(newItem);
         }
-        return newDataLength;
     }
 
-    static read = (id: number): ITask | number => {
-        const data = Storage.getList;
-        if (data !== null && data.length > id) {
-            return data[id];
-        }
-        return 0;
+    read = (id: number): ITask[] => {
+        let data: ITask[] = [];
+        data = this.getList;
+        return data[id];
     }
 
-    static update = (newItem: ITask, id: number): number => {
-        const data = Storage.getList;
-        if(data !== null && data.length > id) {
+    update = (newItem: ITask, id: number): void => {
+        const data = this.getList;
+        if(data.length > 0 && data.length > id) {
             data[id] = newItem;
-            Storage.write(data);
-            const newData = Storage.getList;
-            return newData.length;
+            this.write(data);
         }
-        return 0;
     };
 
-    static delete = (id: number): number => {
-        let newTasks: ITask[] = [];
-        const data = Storage.getList;
-        if(data !== null && data.length > id) {
-            newTasks = data.splice(id, 1);
-            Storage.write(newTasks);
-            const newData = Storage.getList;
-            return newData.length;
+    delete = (id: number): void => {
+        const data = this.getList;
+        if(data.length > 0 && data.length > id) {
+            data.splice(id, 1);
         }
-        return 0;
     };
 }
 

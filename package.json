@@ -4,8 +4,8 @@
   "description": "Development of an API for working with the task calendar",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint && prettier --check",
-    "lint:fix": "eslint . --fix && prettier --write",
+    "lint": "eslint . && prettier --check .",
+    "lint:fix": "eslint . --fix && prettier --write .",
     "test": "jest --coverage",
     "prepare": "husky install",
     "dev": "webpack serve --node-env development",

@@ -1,11 +1,12 @@
 import ITask from "./ITask";
 
 interface ICRUD {
-    create(tasks: ITask): number;
-    read(id: number): ITask | number;
-    update(newItem: ITask, id: number): number;
+    storage: string;
+    create(tasks: ITask): void;
+    read(id: number): ITask[];
+    update(newItem: ITask, id: number): void;
     delete(id: number): void;
-    getList(): ITask[] | null;
+    getList(): ITask[];
 }
 
 export default ICRUD;

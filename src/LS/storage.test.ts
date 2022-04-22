@@ -1,45 +1,41 @@
-import { Storage } from "./storage";
+import Storage from "./storage";
 
-const calendar = new Storage();
+const storage = new Storage();
 
 describe("Test storage", () => {
     beforeEach(() => {
+        // to fully reset the state between tests, clear the storage
         localStorage.clear();
+        // and reset all mocks
+        jest.clearAllMocks();
+        
+        // clearAllMocks will impact your other mocks too, so you can optionally reset individual mocks instead:
+        localStorage.setItem.mockClear();
     });
 
-    test("Method create", () => {
-        const tasks = [
-            {
-                "id": 1,
-                "message": "Сообщение1",
-                "date": "10.03.2022",
-                "state": "Выполнить",
-                "tag": "Тег1, Тег2"
-            },
-            {
-                "id": 2,
-                "message": "Сообщение2",
-                "date": "11.03.2022",
-                "state": "Выполняется",
-                "tag": "Тег2"
-            },
-            {
-                "id": 3,
-                "message": "Сообщение3",
-                "date": "12.03.2022",
-                "state": "Выполнено",
-                "tag": "Тег1"
-            }
-        ]
-        // localStorage.removeItem("tasks");
-        // const localTasksBefore =
-        //     JSON.parse(localStorage.getItem("tasks") as string);
-        // expect(localTasksBefore).toBe(null);
+    test("Method create", async () => {
+        
+        const newTask = {
+            "id": 1,
+            "message": "Сообщение1",
+            "date": "10.03.2022",
+            "state": "Выполнить",
+            "tag": "Тег1, Тег2"
+        }
 
-        calendar.create(tasks);
+        storage.create(newTask);
+        expect(storage.create).toHaveBeenLastCalledWith("tasks", newTask);
+        expect(storage.__STORE__["tasks"]).toBe(newTask);
+        expect(Object.keys(storage.__STORE__).length).toBe(1);
 
-        const localTasksAfter =
-            JSON.parse(localStorage.getItem("tasks") as string);
-        expect(localTasksAfter).toBe(tasks);
+        //const mockFn = jest.fn(localStorage.setItem);
+        //localStorage.setItem = mockFn;
+        
+        //expect(Storage.length).toBe(0);
+        
+        //await storage.create(newTask);
+        //expect(mockFn).toHaveBeenCalledTimes(1);
+
+        //expect(Storage.length).toBe(1);
     });
 });
