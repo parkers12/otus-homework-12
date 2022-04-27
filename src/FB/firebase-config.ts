@@ -5,6 +5,7 @@ import { getDatabase } from "firebase/database";
 const firebaseConfig = {
   apiKey: "AIzaSyBGOHdI4VJr06hbiD2ogA68Ow1PFutMN6c",
   authDomain: "task-calendar-6c313.firebaseapp.com",
+  databaseURL: "https://task-calendar-6c313-default-rtdb.firebaseio.com",
   projectId: "task-calendar-6c313",
   storageBucket: "task-calendar-6c313.appspot.com",
   messagingSenderId: "506904117249",
@@ -12,7 +13,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getDatabase(firebaseApp);
 
 export default db;

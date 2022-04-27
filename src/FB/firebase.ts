@@ -1,42 +1,66 @@
-import { set, get, ref, child, update, onValue, push } from "firebase/database";
+import {
+    set, get, ref, child, update, onValue, push, getDatabase
+} from "firebase/database";
 import db from "./firebase-config";
 
 import ITask from "../types/ITask";
 import ICRUD from "../types/ICRUD";
 
 class Firebase implements ICRUD {
-    storage = "Tasks";
+    #key: string;
+    
+    collection: ITask[];
 
-    getList = async (): Promise<ITask[]> => {
-        const dbRef = ref(db);
-        let data: ITask[] = [];
-        await get(child(dbRef, this.storage)).then((snapshot) => {
-            data = snapshot.val();
-        });
-        return data;
+    constructor(key: string) {
+        this.#key = key;
+        this.init();
+        console.log(this.collection, "44");
     }
 
-    create = async (tasks: ITask): Promise<void> =>
-        await set(ref(db, this.storage), tasks);
-
-    read = async (id: number): Promise<ITask[]> => {
-        let data: ITask[] = [];
-        await onValue(ref(db, this.storage + id), (snapshot) => {
-            data = snapshot.val();
+    async init(): Promise<void> {
+        const dbRef = ref(db);  
+        await get(child(dbRef, this.#key)).then((snapshot) => {
+            if (snapshot.exists()) {
+                this.collection = [...snapshot.val()];
+                console.log(this.collection, "11");
+            }
         });
-        return data;
     }
 
-    update = async (newItem: ITask, id: number): Promise<void> => {
-        const data: ITask[] = [];
-        data[id] = newItem;
-        await update(ref(db), data);
-    }        
+    // async init() {
+    //     const dbRef = ref(db);
 
-    delete = async (id: number): Promise<void> => {
-        const task = ref(db, this.storage + id);
-        task.remove();
-    };
+    //     await get(child(dbRef, this.#key)).then((snapshot) => {
+    //         if (snapshot.exists()) {
+    //             this.collection = snapshot.val();
+    //                 console.log(this.collection, "11");
+    //         } else {
+    //             console.log("No data available");
+    //         }
+    //     }).catch((error) => {
+    //         console.error(error);
+    //     });
+
+    // }
+
+
+    async create (task: ITask): Promise<void> {
+        console.log(await this.collection, "33");
+
+        
+        // await set(ref(db, this.#key), task);
+    }
+
+    // async read (id?: number): Promise<ITask[]> {
+    // }
+
+    // async update (task: ITask, id: number): Promise<void> {
+
+    // }
+
+    // async delete (id: number): Promise<void> {
+ 
+    // };
 }
 
 export default Firebase;
