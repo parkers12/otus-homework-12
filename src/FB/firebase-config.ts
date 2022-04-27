@@ -9,7 +9,7 @@ const firebaseConfig = {
   projectId: "task-calendar-6c313",
   storageBucket: "task-calendar-6c313.appspot.com",
   messagingSenderId: "506904117249",
-  appId: "1:506904117249:web:ffb49f9569065ffe2d0000"
+  appId: "1:506904117249:web:ffb49f9569065ffe2d0000",
 };
 
 // Initialize Firebase

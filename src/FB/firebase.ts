@@ -1,81 +1,80 @@
-import {set, get, ref, child} from "firebase/database";
+import { set, get, ref, child } from "firebase/database";
 import db from "./firebase-config";
 
 import ITask from "../types/ITask";
 import ICRUD from "../types/ICRUD";
 
 class Firebase implements ICRUD {
-    #key: string;
-    
-    collection: ITask[] = [];
+  #key: string;
 
-    constructor(key: string) {
-        this.#key = key;
-    }
+  collection: ITask[] = [];
 
-    async init(): Promise<void> {
-        const dbRef = ref(db);  
-        await get(child(dbRef, this.#key)).then((snapshot) => {
-            if (snapshot.exists()) {
-                this.collection = [...snapshot.val()];
-            }
-        }).catch((error) => {
-            console.error(error);
-        });
-    }
+  constructor(key: string) {
+    this.#key = key;
+  }
 
-    async create (task: ITask): Promise<void> {
-        await this.init();
-
-        if(this.collection.length > 0) {
-            this.collection.push(task);
-            await set(ref(db, this.#key), task);
+  async init(): Promise<void> {
+    const dbRef = ref(db);
+    await get(child(dbRef, this.#key))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          this.collection = [...snapshot.val()];
         }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  async create(task: ITask): Promise<void> {
+    await this.init();
+
+    if (this.collection.length > 0) {
+      this.collection.push(task);
+      await set(ref(db, this.#key), task);
     }
+  }
 
-    async read (id?: number): Promise<ITask[]> {
-        let task: ITask[] = [];
-        await this.init();
+  async read(id?: number): Promise<ITask[]> {
+    let task: ITask[] = [];
+    await this.init();
 
-        if(this.collection.length > 0) {
-            if (id !== undefined) {
-                const index =
-                    this.collection.findIndex(obj => obj.id === id);
+    if (this.collection.length > 0) {
+      if (id !== undefined) {
+        const index = this.collection.findIndex((obj) => obj.id === id);
 
-                task.push(this.collection[index]);
-            } else {
-                task = [...this.collection];
-            }
-        }
-        return task;
+        task.push(this.collection[index]);
+      } else {
+        task = [...this.collection];
+      }
     }
+    return task;
+  }
 
-    async update (task: ITask, id: number): Promise<void> {
-        await this.init();
+  async update(task: ITask, id: number): Promise<void> {
+    await this.init();
 
-        if(this.collection.length > 0) {
-            if (id !== undefined) {
-                const index =
-                    this.collection.findIndex(obj => obj.id === id);
+    if (this.collection.length > 0) {
+      if (id !== undefined) {
+        const index = this.collection.findIndex((obj) => obj.id === id);
 
-                this.collection[index] = task;
-                await set(ref(db, this.#key), this.collection);
-            }
-        }
+        this.collection[index] = task;
+        await set(ref(db, this.#key), this.collection);
+      }
     }
+  }
 
-    async delete (id?: number): Promise<void> {
-        await this.init();
+  async delete(id?: number): Promise<void> {
+    await this.init();
 
-        if (id !== undefined) {
-            const index =
-                this.collection.findIndex(obj => obj.id === id);
-            
-            this.collection.splice(index, 1);
+    if (id !== undefined) {
+      const index = this.collection.findIndex((obj) => obj.id === id);
 
-            await set(ref(db, this.#key), this.collection);
-        }
-    };
+      this.collection.splice(index, 1);
+
+      await set(ref(db, this.#key), this.collection);
+    }
+  }
 }
 
 export default Firebase;
