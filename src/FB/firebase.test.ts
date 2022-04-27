@@ -18,6 +18,14 @@ const newTaskData1 = {
     tag: "Cinema"
 }
 
+const updateTask = {
+    id: 1,
+    message: "To water flowers",
+    date: "25.04.2022 18:00:00",
+    state: "1",
+    tag: "Home"
+}
+
 const newTask = {
     0: newTaskData0,
     1: newTaskData1
@@ -28,23 +36,25 @@ const newTask = {
 describe("Firebase", () => {
     it("Method create", async () => {
       await firebase.create(newTask);
-      //expect(await firebase.read(0)).toEqual(newTaskData0);
+      const arr = [newTaskData0];
+      expect(await firebase.read(0)).toEqual(arr);
+      expect((await firebase.read()).length).toBe(2);
     });
 
-    // it("Method read", async () => {
-        // const data = await firebase.read(0);
-        // expect(data[0]).toEqual(newTaskData0);
-    // });
+    it("Method read", async () => {
+        const data = await firebase.read(0);
+        expect(data[0]).toEqual(newTaskData0);
+    });
 
-    // it("Method update", async () => {
-    //     await firebase.update(updateTask, 7);
-    //     const data = await firebase.read(7);
-    //     expect(data[0].tag).toBe("Cinema");
-    // });
+    it("Method update", async () => {
+        await firebase.update(updateTask, 1);
+        const data = await firebase.read(1);
+        expect(data[0]).toEqual(updateTask);
+    });
     
-    // it("Method delete", async () => {
-    //     await firebase.delete(7);
-    //     const data = await firebase.read(7);
-    //     expect(data[0].tag).toBe("undefined");
-    // });
+    it("Method delete", async () => {
+        expect((await firebase.read()).length).toBe(2);
+        await firebase.delete(1);
+        expect((await firebase.read()).length).toBe(1);
+    });
 });

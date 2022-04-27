@@ -31,7 +31,7 @@ class Storage implements ICRUD {
                             
                             const targetTask = this.collection.find(
                                 task => task.id === id
-                            );
+                            ) as ITask;
 
                             task.push(targetTask);
                         } else {
@@ -72,8 +72,6 @@ class Storage implements ICRUD {
             await Promise.resolve().then(
                 () => {
                     if (id !== undefined) {
-                        this.collection.find(task => task.id !== id);
-
                         const index =
                             this.collection.findIndex(obj => obj.id === id);
                         
