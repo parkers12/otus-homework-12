@@ -1,4 +1,4 @@
-type ITask = {
+type Task = {
   id: number;
   message: string;
   date: string;
@@ -6,4 +6,4 @@ type ITask = {
   tag: string;
 };
 
-export default ITask;
+export default Task;

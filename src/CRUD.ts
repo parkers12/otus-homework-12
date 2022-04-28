@@ -1,9 +1,9 @@
-import ICRUD from "./types/ICRUD";
+import CRUD from "./types/CRUD";
 
 import Storage from "./LS/storage";
 import Firebase from "./FB/firebase";
 
-const getStorage = (storageType: "LS" | "FB"): ICRUD => {
+const getStorage = (storageType: "LS" | "FB"): CRUD => {
   if (storageType === "FB") {
     return new Firebase("FB");
   }
@@ -12,5 +12,5 @@ const getStorage = (storageType: "LS" | "FB"): ICRUD => {
 
 export default getStorage;
 
-// const storage: ICRUD = getStorage("LS");
-// const storage: ICRUD = getStorage("FB");
+// const storage: CRUD = getStorage("LS");
+// const storage: CRUD = getStorage("FB");

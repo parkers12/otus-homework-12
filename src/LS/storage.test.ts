@@ -1,16 +1,11 @@
-import ITask from "../types/ITask";
+import Task from "../types/Task";
 import Storage from "./storage";
 
 const storage = new Storage("Task");
 
 describe("Test storage", () => {
-  beforeAll(() => {
-    window.localStorage.removeItem("Task");
-    // window.localStorage.clear();
-  });
-
   test("Method create", async () => {
-    const newTask1 = {
+    const task = {
       id: 1,
       message: "Сообщение1",
       date: "10.03.2022",
@@ -18,68 +13,89 @@ describe("Test storage", () => {
       tag: "Тег1, Тег2",
     };
 
-    const tasks: ITask[] = [];
-    tasks.push(newTask1);
-
-    await storage.create(newTask1);
-
-    const savedTask = await storage.read(1);
-    const savedTasks = await storage.read();
-
-    expect(savedTask).toStrictEqual(tasks);
-    expect(savedTasks.length).toBe(1);
+    await storage.create(task);
+    expect(await storage.read(1)).toStrictEqual(task);
   });
 
   test("Method read", async () => {
-    const newTask2 = {
-      id: 2,
-      message: "Сообщение2",
+    const task1 = {
+      id: 1,
+      message: "Сообщение1",
       date: "10.03.2022",
       state: "Выполнить",
       tag: "Тег1, Тег2",
     };
 
-    const newTask3 = {
-      id: 3,
-      message: "Сообщение3",
+    const task2 = {
+      id: 2,
+      message: "Сообщение2",
       date: "16.03.2022",
       state: "Выполнить",
       tag: "Тег1, Тег2, Тег3",
     };
 
-    const tasks: ITask[] = [];
-    tasks.push(newTask2);
+    await storage.delete(1);
+    expect(await storage.read()).toBe(undefined);
 
-    await storage.create(newTask2);
-    await storage.create(newTask3);
+    await storage.create(task1);
+    expect(await storage.read(1)).toStrictEqual(task1);
 
-    const savedTask = await storage.read(2);
-    const savedTasks = await storage.read();
-
-    expect(savedTask).toStrictEqual(tasks);
-    expect(savedTasks.length).toBe(3);
+    await storage.create(task2);
+    expect((await storage.read()).length).toBe(2);
   });
 
   test("Method update", async () => {
-    const newTask4 = {
-      id: 2,
-      message: "Сообщение2",
+    const task3 = {
+      id: 3,
+      message: "Сообщение3",
+      date: "10.03.2022",
+      state: "Выполнить",
+      tag: "Тег1, Тег2",
+    };
+    const task4 = {
+      id: 4,
+      message: "Сообщение4",
       date: "25.03.2022",
       state: "Выполнено",
       tag: "Тег1",
     };
+    const task2 = {
+      id: 2,
+      message: "Сообщение2",
+      date: "26.03.2022",
+      state: "Выполнить",
+      tag: "Тег1, Тег2, Тег3",
+    };
 
-    const tasks: ITask[] = [];
-    tasks.push(newTask4);
+    await storage.create(task3);
+    await storage.create(task4);
+    expect((await storage.read()).length).toBe(4);
 
-    await storage.update(newTask4, 2);
-    const savedTask = await storage.read(2);
-    expect(savedTask).toStrictEqual(tasks);
+    await storage.update(task2, 2);
+    expect(await storage.read(2)).toStrictEqual(task2);
   });
 
   test("Method delete", async () => {
+    const task = {
+      id: 1,
+      message: "Сообщение1",
+      date: "10.03.2022",
+      state: "Выполнить",
+      tag: "Тег1, Тег2",
+    };
+
+    expect((await storage.read()).length).toBe(4);
+
+    await storage.delete(4);
+    expect((await storage.read()).length).toBe(3);
+
+    await storage.delete(3);
+    expect((await storage.read()).length).toBe(2);
+
     await storage.delete(2);
-    const savedTasks = await storage.read();
-    expect(savedTasks.length).toBe(2);
+    expect((await storage.read()).length).toBe(1);
+    
+    await storage.delete(1);
+    expect(await storage.read(1)).toBe(undefined);
   });
 });

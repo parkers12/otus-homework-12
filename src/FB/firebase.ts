@@ -1,13 +1,13 @@
 import { set, get, ref, child } from "firebase/database";
 import db from "./firebase-config";
 
-import ITask from "../types/ITask";
-import ICRUD from "../types/ICRUD";
+import Task from "../types/Task";
+import CRUD from "../types/CRUD";
 
-class Firebase implements ICRUD {
+class Firebase implements CRUD {
   #key: string;
 
-  collection: ITask[] = [];
+  collection: Task[] = [];
 
   constructor(key: string) {
     this.#key = key;
@@ -26,7 +26,7 @@ class Firebase implements ICRUD {
       });
   }
 
-  async create(task: ITask): Promise<void> {
+  async create(task: Task): Promise<void> {
     await this.init();
 
     if (this.collection.length > 0) {
@@ -35,8 +35,8 @@ class Firebase implements ICRUD {
     }
   }
 
-  async read(id?: number): Promise<ITask[]> {
-    let task: ITask[] = [];
+  async read(id?: number): Promise<Task[]> {
+    let task: Task[] = [];
     await this.init();
 
     if (this.collection.length > 0) {
@@ -51,7 +51,7 @@ class Firebase implements ICRUD {
     return task;
   }
 
-  async update(task: ITask, id: number): Promise<void> {
+  async update(task: Task, id: number): Promise<void> {
     await this.init();
 
     if (this.collection.length > 0) {
