@@ -13,9 +13,22 @@ class Firebase implements CRUD {
     this.#key = key;
   }
 
-  async init(): Promise<void> {
+  async create(task: Task): Promise<void> {
+    await set(ref(db, this.#key), task);
+  }
+
+  async read(id?: number): Promise<Task[]> {
+    let task: Task[] = [];
+
+    let query: string;
+    if(id !== undefined) {
+      query = `${this.#key}`
+    } else {
+      query = `${this.#key}/${id}`
+    }
+
     const dbRef = ref(db);
-    await get(child(dbRef, this.#key))
+    await get(child(dbRef, `${query}`))
       .then((snapshot) => {
         if (snapshot.exists()) {
           this.collection = [...snapshot.val()];
@@ -24,23 +37,10 @@ class Firebase implements CRUD {
       .catch((error) => {
         console.error(error);
       });
-  }
 
-  async create(task: Task): Promise<void> {
-    await this.init();
-
-    if (this.collection.length > 0) {
-      this.collection.push(task);
-      await set(ref(db, this.#key), task);
-    }
-  }
-
-  async read(id?: number): Promise<Task[]> {
-    let task: Task[] = [];
-    await this.init();
-
-    if (this.collection.length > 0) {
+    if (this.collection !== undefined) {
       if (id !== undefined) {
+        // console.log(this.collection)
         const index = this.collection.findIndex((obj) => obj.id === id);
 
         task.push(this.collection[index]);
@@ -52,9 +52,18 @@ class Firebase implements CRUD {
   }
 
   async update(task: Task, id: number): Promise<void> {
-    await this.init();
+    const dbRef = ref(db);
+    await get(child(dbRef, this.#key))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          this.collection = [...snapshot.val()];
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
-    if (this.collection.length > 0) {
+    if (this.collection !== undefined) {
       if (id !== undefined) {
         const index = this.collection.findIndex((obj) => obj.id === id);
 
@@ -65,7 +74,16 @@ class Firebase implements CRUD {
   }
 
   async delete(id?: number): Promise<void> {
-    await this.init();
+    const dbRef = ref(db);
+    await get(child(dbRef, this.#key))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          this.collection = [...snapshot.val()];
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
     if (id !== undefined) {
       const index = this.collection.findIndex((obj) => obj.id === id);

@@ -42,6 +42,8 @@ describe("Firebase", () => {
   it("Method read", async () => {
     const data = await firebase.read(0);
     expect(data[0]).toEqual(newTaskData0);
+
+    expect((await firebase.read()).length).toBe(2);
   });
 
   it("Method update", async () => {
