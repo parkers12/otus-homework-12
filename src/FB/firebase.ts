@@ -21,10 +21,10 @@ class Firebase implements CRUD {
     let task: Task[] = [];
 
     let query: string;
-    if(id !== undefined) {
-      query = `${this.#key}`
+    if (id !== undefined) {
+      query = `${this.#key}`;
     } else {
-      query = `${this.#key}/${id}`
+      query = `${this.#key}/${id}`;
     }
 
     const dbRef = ref(db);

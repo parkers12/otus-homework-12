@@ -94,7 +94,7 @@ describe("Test storage", () => {
 
     await storage.delete(2);
     expect((await storage.read()).length).toBe(1);
-    
+
     await storage.delete(1);
     expect(await storage.read(1)).toBe(undefined);
   });
