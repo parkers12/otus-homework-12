@@ -13,8 +13,6 @@ class Firebase implements CRUD {
 
   constructor(key: string) {
     this.#key = key;
-
-    
   }
 
   async create(task: Task): Promise<void> {
