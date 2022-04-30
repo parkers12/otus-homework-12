@@ -22,61 +22,43 @@ class Storage implements CRUD {
 
   async read(id?: number): Promise<Task | Task[]> {
     let tasks: Task | Task[] | undefined;
-    try {
-      await Promise.resolve().then(() => {
-        if (this.collection.length > 0) {
-          if (id !== undefined) {
-            tasks = this.collection.find((task) => task.id === id) as Task;
-          } else {
-            tasks = [...this.collection];
-          }
+    await Promise.resolve().then(() => {
+      if (this.collection.length > 0) {
+        if (id !== undefined) {
+          tasks = this.collection.find((task) => task.id === id) as Task;
         } else {
-          tasks = undefined;
+          tasks = [...this.collection];
         }
-      });
-    } catch (e) {
-      console.log(e);
-    }
+      }
+    });
     return tasks;
   }
 
-  async update(task: Task, id: number): Promise<void> {
-    try {
+  async update(task: Task, id: number): Promise<boolean> {
+    if (id !== undefined) {
       await Promise.resolve().then(() => {
-        if (id !== undefined) {
-          const index = this.collection.findIndex((obj) => obj.id === id);
-          this.collection[index] = task;
+        const index = this.collection.findIndex((obj) => obj.id === id);
+        this.collection[index] = task;
 
-          window.localStorage.setItem(
-            this.#key,
-            JSON.stringify(this.collection)
-          );
-        }
+        window.localStorage.setItem(this.#key, JSON.stringify(this.collection));
       });
-    } catch (e) {
-      console.log(e);
+      return true;
     }
+    return false;
   }
 
-  async delete(id?: number): Promise<void> {
-    try {
+  async delete(id: number): Promise<boolean> {
+    if (id !== undefined) {
       await Promise.resolve().then(() => {
-        if (id !== undefined) {
-          const index = this.collection.findIndex((obj) => obj.id === id);
+        const index = this.collection.findIndex((obj) => obj.id === id);
+        this.collection.splice(index, 1);
 
-          this.collection.splice(index, 1);
-
-          window.localStorage.setItem(
-            this.#key,
-            JSON.stringify(this.collection)
-          );
-        } else {
-          localStorage.removeItem(this.#key);
-        }
+        window.localStorage.setItem(this.#key, JSON.stringify(this.collection));
       });
-    } catch (e) {
-      console.log(e);
+      return true;
     }
+    // localStorage.removeItem(this.#key);
+    return false;
   }
 }
 

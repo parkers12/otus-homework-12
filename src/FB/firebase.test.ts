@@ -48,13 +48,32 @@ describe("Firebase", () => {
 
   it("Method update", async () => {
     await firebase.update(updateTask, 1);
-    const data = await firebase.read(1);
-    expect(data[0]).toEqual(updateTask);
+    const data1 = await firebase.read(1);
+    expect(data1[0]).toEqual(updateTask);
+
+    const data2 = await firebase.update(updateTask);
+    expect(data2).toBe(false);
+
+    await firebase.delete(0);
+    await firebase.delete(1);
+    expect((await firebase.read()).length).toBe(0);
+    const data3 = await firebase.update(updateTask, 1);
+    expect(data3).toBe(false);
   });
 
   it("Method delete", async () => {
+    expect((await firebase.read()).length).toBe(0);
+
+    await firebase.create(newTask);
+    const arr = [newTaskData0];
+    expect(await firebase.read(0)).toEqual(arr);
     expect((await firebase.read()).length).toBe(2);
-    await firebase.delete(1);
+
+    const del1 = await firebase.delete(1);
     expect((await firebase.read()).length).toBe(1);
+    expect(del1).toBe(true);
+
+    const del2 = await firebase.delete();
+    expect(del2).toBe(false);
   });
 });

@@ -28,15 +28,11 @@ class Firebase implements CRUD {
     }
 
     const dbRef = ref(db);
-    await get(child(dbRef, `${query}`))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          this.collection = [...snapshot.val()];
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    await get(child(dbRef, `${query}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        this.collection = [...snapshot.val()];
+      }
+    });
 
     if (this.collection !== undefined) {
       if (id !== undefined) {
@@ -51,47 +47,41 @@ class Firebase implements CRUD {
     return task;
   }
 
-  async update(task: Task, id: number): Promise<void> {
-    const dbRef = ref(db);
-    await get(child(dbRef, this.#key))
-      .then((snapshot) => {
+  async update(task: Task, id: number): Promise<boolean> {
+    if (id !== undefined) {
+      const dbRef = ref(db);
+      await get(child(dbRef, this.#key)).then((snapshot) => {
         if (snapshot.exists()) {
           this.collection = [...snapshot.val()];
         }
-      })
-      .catch((error) => {
-        console.error(error);
       });
 
-    if (this.collection !== undefined) {
-      if (id !== undefined) {
+      if (this.collection !== undefined && this.collection.length > 0) {
         const index = this.collection.findIndex((obj) => obj.id === id);
-
         this.collection[index] = task;
         await set(ref(db, this.#key), this.collection);
+        return true;
       }
+      return false;
     }
+    return false;
   }
 
-  async delete(id?: number): Promise<void> {
+  async delete(id?: number): Promise<boolean> {
     const dbRef = ref(db);
-    await get(child(dbRef, this.#key))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          this.collection = [...snapshot.val()];
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    await get(child(dbRef, this.#key)).then((snapshot) => {
+      if (snapshot.exists()) {
+        this.collection = [...snapshot.val()];
+      }
+    });
 
     if (id !== undefined) {
       const index = this.collection.findIndex((obj) => obj.id === id);
-
       this.collection.splice(index, 1);
-
       await set(ref(db, this.#key), this.collection);
+      return true;
     }
+    return false;
   }
 }
 
