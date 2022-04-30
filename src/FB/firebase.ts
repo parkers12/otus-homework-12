@@ -7,10 +7,14 @@ import CRUD from "../types/CRUD";
 class Firebase implements CRUD {
   #key: string;
 
+  #dbRef = ref(db);
+
   collection: Task[] = [];
 
   constructor(key: string) {
     this.#key = key;
+
+    
   }
 
   async create(task: Task): Promise<void> {
@@ -27,8 +31,7 @@ class Firebase implements CRUD {
       query = `${this.#key}/${id}`;
     }
 
-    const dbRef = ref(db);
-    await get(child(dbRef, `${query}`)).then((snapshot) => {
+    await get(child(this.#dbRef, `${query}`)).then((snapshot) => {
       if (snapshot.exists()) {
         this.collection = [...snapshot.val()];
       }
@@ -49,8 +52,7 @@ class Firebase implements CRUD {
 
   async update(task: Task, id: number): Promise<boolean> {
     if (id !== undefined) {
-      const dbRef = ref(db);
-      await get(child(dbRef, this.#key)).then((snapshot) => {
+      await get(child(this.#dbRef, this.#key)).then((snapshot) => {
         if (snapshot.exists()) {
           this.collection = [...snapshot.val()];
         }
@@ -62,14 +64,12 @@ class Firebase implements CRUD {
         await set(ref(db, this.#key), this.collection);
         return true;
       }
-      return false;
     }
     return false;
   }
 
   async delete(id?: number): Promise<boolean> {
-    const dbRef = ref(db);
-    await get(child(dbRef, this.#key)).then((snapshot) => {
+    await get(child(this.#dbRef, this.#key)).then((snapshot) => {
       if (snapshot.exists()) {
         this.collection = [...snapshot.val()];
       }
